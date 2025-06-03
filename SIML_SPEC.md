@@ -1,31 +1,116 @@
-# SIML Language Specification (v1)
+# SIML Specification — Draft (v0.1)
 
-## 1. Top-Level Sections
+> SIML is a small declarative language and runtime designed for:
+> - Defining simulation environments
+> - Running tick-based simulations
+> - Training and evaluating LLM-based autonomous agents
 
-- `state:` – define simulation and agent state
-- `actions:` – define callable side-effecting logic
-- `rules:` – tick- or event-triggered logic blocks
-- `agents:` – LLM-based agents that observe state and choose actions
-- `synthesize_templates:` – LLM-driven data generators
-- `import:` – multi-file program composition
+---
 
-## 2. Execution Model
+## What SIML Is
 
-1. At each tick:
-   - Apply `rules:` (if triggered)
-   - Execute LLM `agents:` (prompt + result)
-   - Process `emit:` events
-   - Log all state changes
-   - Increment `tick`
+SIML is a YAML-like DSL for building simulations where:
+- You define structured state (`state:`)
+- Define logic and side effects via `actions:` and `rules:`
+- Declare autonomous `agents:` that observe state and call actions
+- Generate synthetic data using `templates:` + `synthesize()`
+- Simulate the system over discrete time steps (ticks)
+- Track outcomes, log events, and collect reward signals
+- Export traces and datasets for training or evaluating agents
 
-## 3. Core Keywords
+---
 
-- `set:`, `log:`, `emit:`, `do:`, `if`, `for each:`, `prompt:`, `result.*`, `append to:`
+## What SIML Does
 
-## 4. Agent Behavior
+| Feature            | Description |
+|--------------------|-------------|
+| Define State     | You describe your world with nested variables |
+| Define Behavior  | You define actions (`do:`) and triggers (`rules:`) |
+| Run Simulations  | SIML executes step-by-step ticks with deterministic state transitions |
+| Prompt Agents    | LLM agents observe state and call declared tools |
+| Log and Reward   | Each tick is logged; rewards are assigned for training |
+| Export Datasets  | You can export training-ready JSONL datasets |
+| Support OpenAI   | The runtime can call real models with your API key |
+| Run Locally      | SIML is CLI-based and open source |
 
-Agents are defined per entity (`for each`) and are triggered by rules. They observe structured context and call declared `actions:` (functions) via LLM tool-calling.
+---
 
-## 5. MCP Compatibility
+## Top-Level Blocks
 
-Every `action:` is MCP-exportable as a function/tool with input schema. AgentOps exposes these via the MCP Remote API for OpenAI integration.
+```yaml
+config:      # simulation length, units, randomness
+state:       # starting values
+actions:     # things that mutate the state
+rules:       # logic that triggers each tick
+agents:      # LLMs that act in the simulation
+templates:   # data generators for synthesized state
+```
+
+---
+
+## Example
+
+```yaml
+config:
+  max_ticks: 10
+  tick_unit: "days"
+
+state:
+  - invoices: synthesize(invoice_template, 100)
+  - tick: 0
+
+templates:
+  - template: invoice_template
+    examples:
+      - id: 1
+        amount: 4200
+        status: "pending"
+
+actions:
+  - action: approve_invoice
+    with: [invoice]
+    do:
+      - if invoice.amount < 5000:
+          - set: invoice.status = "approved"
+          - set: agent_reward = 1
+
+rules:
+  - trigger: on tick
+    do:
+      - for each: invoice in invoices
+          - prompt agent: billing_agent with: invoice
+      - set: tick = tick + 1
+
+agents:
+  - agent: billing_agent
+    for each: invoice in invoices
+    llm:
+      provider: openai
+      model: gpt-4o
+      function_calling: true
+    context:
+      invoice: invoice
+    can_call:
+      - approve_invoice
+```
+
+---
+
+## What's Out of Scope
+
+- General-purpose computation
+- UI-based programming
+- Arbitrary Python code injection
+
+---
+
+## Summary
+
+SIML helps you:
+
+1. Model dynamic state
+2. Encode agent behavior
+3. Simulate what agents would do
+4. Export the data you need to train and evaluate them
+
+
