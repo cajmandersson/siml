@@ -95,6 +95,12 @@ class Tokenizer:
                 elif value in ("true", "false"):
                     return TokenType.BOOLEAN, value == "true"
                 
+                elif value == "and":
+                    return TokenType.AND, value
+                
+                elif value == "or":
+                    return TokenType.OR, value
+                
                 elif value == "null":
                     return TokenType.NULL, None
                 
@@ -134,6 +140,101 @@ class Tokenizer:
                 case "STRING":
                     token_type, token_value = self._parse_token_value(value, TokenType.STRING, line)
                     token = Token(token_type, token_value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "LPAREN":
+                    token = Token(TokenType.LPAREN, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+                
+                case "RPAREN":
+                    token = Token(TokenType.RPAREN, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+                
+                case "LBRACKET":
+                    token = Token(TokenType.LBRACKET, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+                
+                case "RBRACKET":
+                    token = Token(TokenType.RBRACKET, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+                
+                case "COMMA":
+                    token = Token(TokenType.COMMA, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "DOT":
+                    token = Token(TokenType.DOT, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "EQUALS":
+                    token = Token(TokenType.EQUALS, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+                
+                case "PLUS":
+                    token = Token(TokenType.PLUS, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "MINUS":
+                    token = Token(TokenType.MINUS, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "MULTIPLY":
+                    token = Token(TokenType.MULTIPLY, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+                
+                case "DIVIDE":
+                    token = Token(TokenType.DIVIDE, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "MODULO":
+                    token = Token(TokenType.MODULO, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+                
+                case "POWER":
+                    token = Token(TokenType.POWER, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "EQUAL_EQUAL":
+                    token = Token(TokenType.EQUAL_EQUAL, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "NOT_EQUAL":
+                    token = Token(TokenType.NOT_EQUAL, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "LESS_EQUAL":
+                    token = Token(TokenType.LESS_EQUAL, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "GREATER_EQUAL":
+                    token = Token(TokenType.GREATER_EQUAL, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "LESS_THAN":
+                    token = Token(TokenType.LESS_THAN, value, line, indent)
+                    self.tracer.info(f"Tokenized: {token}")
+                    yield token
+
+                case "GREATER_THAN":
+                    token = Token(TokenType.GREATER_THAN, value, line, indent)
                     self.tracer.info(f"Tokenized: {token}")
                     yield token
 
