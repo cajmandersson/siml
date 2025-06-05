@@ -12,11 +12,16 @@ def main():
     Tracer.enabled = True
 
     source = '''
-    state:
+state:
+  - users:
+    - name: "Alice"
+      age: 30
+    - name: "Bob"
+      age: 25
 '''
-
     tokenizer = Tokenizer(source)
-    tokenizer.tokenize()
+
+    tokens = list(tokenizer)
 
 if __name__ == "__main__":
     main()
