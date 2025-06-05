@@ -5,6 +5,11 @@ from typing import Any, Dict
 
 KEYWORDS = {
     "state",
+    "config",
+    "actions",
+    "rules",
+    "agents",
+    "templates"
     }
 
 class Tokenizer:
@@ -37,6 +42,11 @@ class Tokenizer:
                     token = Token(TokenType.DEDENT, None, line, indent_stack[-1] * 2)
                     self.tracer.info(f"Tokenized: {token}")
                     yield token
+
+            # Remove inline comments and strip whitespace
+            text = self.strip_inline_comment(text)
+            if not text:  # Skip empty lines after stripping comments
+                continue
 
             stripped = text.strip()
             if not stripped: # Skip empty lines
@@ -131,3 +141,29 @@ class Tokenizer:
 
     def is_keyword(self, value: str) -> bool:
         return value in self.keywords
+    
+    def strip_inline_comment(self, line: str) -> str:
+        """
+        Strip inline comments from a line of text.
+        Comments start with '#' and continue to the end of the line.
+        Does not remove comments inside quotes.
+        """
+        if not line:
+            return line
+        
+        stripped = []
+        quote_char = None # Track what type of quote is currently open (single or double)
+        for char in line:
+            if char in ('"', "'"):
+                if quote_char is None:
+                    quote_char = char # Open a quote if not already in one
+                elif quote_char == char:
+                    quote_char = None # Close the quote if it matches the current one
+
+            if char == '#' and quote_char is None:
+                # If we hit a comment and we're not inside quotes, stop processing
+                break
+
+            stripped.append(char)
+
+        return ''.join(stripped).rstrip()  # Remove trailing whitespace after stripping comments

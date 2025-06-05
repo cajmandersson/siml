@@ -13,11 +13,12 @@ def main():
 
     source = '''
 state:
+# this is a comment
   - users:
-    - name: "Alice"
+    - name: "Alice" # Including a comment
       age: 30.4
       hungry: .4
-    - name: "Bob"
+    - name: "#bob"
       age: -25
 '''
     tokenizer = Tokenizer(source)
