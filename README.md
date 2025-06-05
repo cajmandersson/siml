@@ -1,21 +1,56 @@
 # SIML — Simulation Modeling Language
 
-**SIML** is a declarative programming language for building agent-based simulations, synthetic data environments, and LLM-driven workflows. Designed for structured reasoning, training, and evaluation of autonomous agents, SIML combines YAML-style clarity with real-time event-driven behavior modeling.
+**SIML** is a declarative language for defining modular simulation environments, generating synthetic data, and training large language model (LLM) agents in structured, tick-based systems. It enables organizations to model production-like environments in isolated sandboxes for experimentation, traceability, and LLM-driven automation.
 
-> This project is in early development. See [SIML_SPEC.md](./SIML_SPEC.md) for design goals and syntax plans.
+> This project is in early development. See [SIML_SPEC.md](./SIML_SPEC.md) for design goals and syntax.
 
 ---
 
-## Features (Planned)
+## Use Case
 
-- Declarative `state:`, `actions:`, `rules:`, `agents:`, and `templates:` blocks
-- Support for nested data structures (lists, dicts, primitives)
-- Tick-based simulation runtime with state diffs, logging, and reward attribution
-- LLM-powered agents with structured function calling and per-instance memory
-- Synthetic data generation using `synthesize(template, count)`
-- CLI tools: `siml run`, `siml trace`, `siml export`
-- MCP-compatible: export agents and tools for OpenAI / remote use
-- Local + API-based runtime support (bring your own OpenAI key)
+SIML is designed for developers and domain experts to:
+
+- Build structured data environments that simulate real-world systems
+- Encode behaviors, rules, and side effects using declarative logic
+- Simulate system dynamics over time to train or test LLM agents
+- Export agent traces and rewards for fine-tuning or evaluation
+
+---
+
+## Key Features
+
+- Modular top-level `simulation:` entry point
+- Declarative `modules:` with local `state:`, `actions:`, `rules:`, and `templates:`
+- Shared `agents:` that observe and act across module boundaries
+- Synthetic data generation via `synthesize(template, count)`
+- LLM function calling, contextual decision-making, and tick-based control
+- CLI tools for running, tracing, and exporting simulations
+
+---
+
+## Program Layout
+
+A complete SIML program has a single entry point:
+
+```yaml
+simulation:
+  config:
+    max_ticks: 10
+    tick_unit: "days"
+
+  agents:
+    - agent: ...
+
+  modules:
+    - module:
+        id: orders
+        state: ...
+        actions: ...
+        rules: ...
+        templates: ...
+
+    - module: "./modules/invoicing.siml"
+```
 
 ---
 
@@ -23,19 +58,19 @@
 
 ```
 siml/
-├── siml/               # core parser + runtime (TBD)
-├── cli/                # CLI commands (TBD)
-├── examples/           # .siml programs
-├── tests/              # unit tests (TBD)
+├── siml/               # tokenizer, parser, runtime
+├── cli/                # CLI commands
+├── examples/           # complete .siml programs
+├── tests/              # parser + runtime tests
 ├── README.md
-├── SIML_SPEC.md        # language design (draft)
+├── SIML_SPEC.md        # language design
 ├── pyproject.toml
 └── LICENSE
 ```
 
 ---
 
-## Getting Started (Dev Mode)
+## Getting Started
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/siml.git
@@ -45,20 +80,20 @@ source .venv/bin/activate
 pip install -e .
 ```
 
-Run a CLI command (once implemented):
+Run a SIML program:
 
 ```bash
-siml run examples/hello_world.siml
+siml run examples/invoice_simulation.siml
 ```
 
 ---
 
-## Docs & Design
+## Docs
 
-- [SIML_SPEC.md](./SIML_SPEC.md) — high-level overview, semantics, examples
+- [SIML_SPEC.md](./SIML_SPEC.md) — full language spec and examples
 
 ---
 
 ## License
 
-Apache 2.0 — open source and extensible.
+Apache 2.0 — open source and extensible. Contributions welcome.

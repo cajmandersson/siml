@@ -9,7 +9,11 @@ KEYWORDS = {
     "actions",
     "rules",
     "agents",
-    "templates"
+    "templates",
+    "simulationd",
+    "module",
+    "import",
+    "export"
     }
 
 class Tokenizer:
