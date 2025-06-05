@@ -15,9 +15,10 @@ def main():
 state:
   - users:
     - name: "Alice"
-      age: 30
+      age: 30.4
+      hungry: .4
     - name: "Bob"
-      age: 25
+      age: -25
 '''
     tokenizer = Tokenizer(source)
 
