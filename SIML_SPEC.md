@@ -82,11 +82,11 @@ rules:
       - set: tick = tick + 1
 
 agents:
-  - agent: billing_agent
+  - agent: "billing_agent"
     for each: invoice in invoices
     llm:
-      provider: openai
-      model: gpt-4o
+      provider: "openai"
+      model: "gpt-4o"
       function_calling: true
     context:
       invoice: invoice

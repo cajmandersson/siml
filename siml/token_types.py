@@ -1,23 +1,61 @@
-from enum import Enum
+from enum import Enum, auto
 import re 
 
 class TokenType(Enum):
-    KEYWORD = 1
-    COLON = 2
-    DASH = 3
-    IDENTIFIER = 4
-    NUMBER = 5
-    STRING = 6
-    BOOLEAN = 9
-    NULL = 10
-    INDENT = 7
-    DEDENT = 8
+    COLON = auto()
+    KEYWORD = auto()
+    DASH = auto()
+    IDENTIFIER = auto()
+    NUMBER = auto()
+    STRING = auto()
+    BOOLEAN = auto()
+    NULL = auto()
+    INDENT = auto()
+    DEDENT = auto()
+    LPAREN = auto()
+    RPAREN = auto()
+    LBRACKET = auto()
+    RBRACKET = auto()
+    COMMA = auto()
+    DOT = auto()
+    EQUALS = auto()
+    PLUS = auto()
+    MINUS = auto()
+    MULTIPLY = auto()
+    DIVIDE = auto()
+    MODULO = auto()
+    POWER = auto()
+    EQUAL_EQUAL = auto()
+    NOT_EQUAL = auto()
+    LESS_EQUAL = auto()
+    GREATER_EQUAL = auto()
+    LESS_THAN = auto()
+    GREATER_THAN = auto()
+    AND = auto()
+    OR = auto()
 
 TOKEN_REGEX = re.compile(r'''
     (?P<COLON>:)
+    | (?P<EQUAL_EQUAL>==)
+    | (?P<NOT_EQUAL>!=)
+    | (?P<LESS_EQUAL><=)
+    | (?P<GREATER_EQUAL>>=)                
     | (?P<NUMBER>-?(?:\d*\.\d+|\d+))
-    | (?P<DASH>-)
-
     | (?P<IDENTIFIER>[a-zA-Z_][a-zA-Z0-9_]*)
     | (?P<STRING>"[^"]*"|'[^']*')
+    | (?P<LPAREN>\()
+    | (?P<RPAREN>\))
+    | (?P<LBRACKET>\[)
+    | (?P<RBRACKET>\])
+    | (?P<COMMA>,)
+    | (?P<DOT>\.)
+    | (?P<EQUALS>=)
+    | (?P<PLUS>\+)
+    | (?P<MINUS>-)
+    | (?P<POWER>\*\*)
+    | (?P<MULTIPLY>\*)
+    | (?P<DIVIDE>/)
+    | (?P<MODULO>%)
+    | (?P<LESS_THAN><)
+    | (?P<GREATER_THAN>>)
 ''', re.VERBOSE)

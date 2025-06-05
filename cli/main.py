@@ -13,13 +13,47 @@ def main():
 
     source = '''
 state:
-# this is a comment
-  - users:
-    - name: "Alice" # Including a comment
-      age: 30.4
-      hungry: .4
-    - name: "#bob"
-      age: -25
+config:
+  max_ticks: 10
+  tick_unit: "days"
+
+state:
+  - invoices: synthesize(invoice_template, 100)
+  - tick: 0
+
+templates:
+  - template: invoice_template
+    examples:
+      - id: 1
+        amount: 4200
+        status: "pending"
+
+actions:
+  - action: approve_invoice
+    with: [invoice]
+    do:
+      - if invoice.amount < 5000:
+          - set: invoice.status = "approved"
+          - set: agent_reward = 1
+
+rules:
+  - trigger: on tick
+    do:
+      - for each: invoice in invoices
+          - prompt agent: billing_agent with: invoice
+      - set: tick = tick + 1
+
+agents:
+  - agent: "billing_agent"
+    for each: invoice in invoices
+    llm:
+      provider: "openai"
+      model: "gpt-4o"
+      function_calling: true
+    context:
+      invoice: invoice
+    can_call:
+      - approve_invoice
 '''
     tokenizer = Tokenizer(source)
 
