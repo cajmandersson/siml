@@ -7,6 +7,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from siml.tracer import Tracer
 from siml.tokenizer import Tokenizer
 
+from siml.ast_nodes import (
+    SimulationNode, ModuleNode, StateVarNode, NumberNode
+)
+
 
 def main():
     Tracer.enabled = True
@@ -18,7 +22,7 @@ config:
   tick_unit: "days"
 
 state:
-  - invoices: synthesize(invoice_template, 100)
+  - invoices: generate(invoice_template, 100)
   - tick: 0
 
 templates:
@@ -58,6 +62,31 @@ agents:
     tokenizer = Tokenizer(source)
 
     tokens = list(tokenizer)
+
+    # Build a small fake AST manually
+    fake_ast = SimulationNode(
+        line=1,
+        indent=0,
+        modules=[
+            ModuleNode(
+                line=2,
+                indent=2,
+                name="core",
+                state=[
+                    StateVarNode(
+                        line=3,
+                        indent=4,
+                        name="tick",
+                        value=NumberNode(line=3, indent=6, value=0)
+                    )
+                ]
+            )
+        ]
+    )
+
+    tracer = Tracer("AST")
+    tracer.enabled = True
+    tracer.debug_ast(fake_ast)
 
 if __name__ == "__main__":
     main()

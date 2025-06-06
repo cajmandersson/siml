@@ -147,6 +147,70 @@ agents:
 ```
 
 ---
+## Example Module
+```yaml
+module:
+  id: support_module
+
+  state:
+    - users:
+        - id: 1
+          profile:
+            name: "Alice"
+            role: "customer"
+            address:
+              street: "Main St"
+              city: "Metropolis"
+              country: "Fictionland"
+            preferences:
+              notifications:
+                email: true
+                sms: false
+        - id: 2
+          profile:
+            name: "Bob"
+            role: "agent"
+            address:
+              street: "Second St"
+              city: "Metropolis"
+              country: "Fictionland"
+            preferences:
+              notifications:
+                email: true
+                sms: true
+
+    - support_queue:
+        open:
+          - ticket_id: 101
+            status: "new"
+            assigned_to: null
+            customer_id: 1
+            messages:
+              - from: "Alice"
+                content: "I can't log in."
+                timestamp: 0
+        closed: []
+
+    - settings:
+        working_hours:
+          start: 9
+          end: 17
+        escalation_threshold: 2
+        auto_assign_enabled: true
+
+  actions:
+    - action: assign_ticket
+      with: [ticket]
+      do:
+        - set: ticket.assigned_to = "agent:42"
+
+  rules:
+    - trigger: on tick
+      do:
+        - for each: ticket in support_queue.open
+            - if ticket.assigned_to == null:
+                - call: assign_ticket with: ticket
+```
 
 ## Notes
 
